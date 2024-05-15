@@ -2,7 +2,11 @@ pub mod file_io;
 pub mod data_structures;
 pub mod algorithms;
 
-use crate::algorithms::edit_distance::string_compare_r;
+
+
+// We should ask if this is correct use of this file. 
+// Cassidy says it's against convention, *shrug*
+use crate::algorithms::edit_distance::string_compare_r; 
 //use crate::Graph;
 
 #[cfg(test)]
@@ -42,7 +46,8 @@ mod tests {
 
     #[test]
     fn try_suffix_tree(){
-        let st: SuffixTree = SuffixTree::new("xacxad");
+        //Suffix tree isnt in this scope. who did this?
+        //let st: SuffixTree = SuffixTree::new("xacxad");
     }
 
 }

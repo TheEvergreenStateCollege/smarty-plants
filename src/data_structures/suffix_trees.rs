@@ -264,12 +264,35 @@ impl SuffixTree {
     // and I don't know why. wtf
 
     pub fn find_substring(&self, substring: &str) -> (usize, usize) {
-        let mut current_node: usize = 0; //start at root
-        let mut index_in_node: usize = 0; //Node has no substring it refers to
-        let mut chars_in_node: usize = 0;
-        let mut match_size: usize = 0;
+        let mut current_node:  usize = 0; // start at root
+        let mut index_in_node: usize = 0; // Node has no substring it refers to
+        let mut chars_in_node: usize = 0; // only because root has no size
 
-        for c in substring.chars() {
+        let mut start: usize = 0; //root return should probably be better then 0
+        let mut size:  usize = 0;
+
+        for sub_char in substring.chars() {
+            //this is slow but we dont have a better way to see if our alphabet contains a character.
+            //
+            if self.string.contains(sub_char){ 
+                //we now know the letter is in the alphabet and can use the lookup table
+                //sense root cant have get_size we need to look at children. 
+                size += 1;
+                let str_index = self.char_index(sub_char);
+                let child = self.nodes[current_node].children[str_index];
+                if self.nodes[current_node].children[str_index] != 0 { //0 is not still false :(
+                    // Child has char
+                    // TODO: the start should only be set once, I think.
+                    start = self.nodes[child].start.unwrap();
+                }
+                break  // char exist but child does not contain it. 
+            }
+            else{
+                break; // char not found in alphabet. sense we cant check any other way.
+            }
+        }
+        return (start, size); //hopefully only one return statement.
+            /*
             if index_in_node + 1 >= chars_in_node {
                 let child = self.nodes[current_node].children[self.char_index(c)];
                 if child == 0 {
@@ -293,14 +316,26 @@ impl SuffixTree {
                 return (self.nodes[current_node].start.unwrap(), match_size);
             }
         }
-        (0, 0)
+        (0, 0) */
     }
 }
 
-#[cfg(tests)]
+#[cfg(test)]
 mod tests {
+    use super::SuffixTree;
+
     #[test]
     fn make_tree() {
-        let tree = SuffixTree::new(4);
+        let tree = SuffixTree::new("ThisTestHad4Before");
+    }
+
+    #[test]
+    fn find_substring(){
+        let tree = SuffixTree::new(" ");
+        println!("tree = {:#?}", tree);
+        //consiquentally tests spaces for readability. 
+        let res = tree.find_substring("quick");
+        println!("results = {:#?}", res);
     }
 }
+
