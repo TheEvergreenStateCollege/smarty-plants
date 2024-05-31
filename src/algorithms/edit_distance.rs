@@ -1,3 +1,5 @@
+use std::cmp::min;
+
 use crate::data_structures::matrix::Matrix;
 
 /// Return the minimum amount of changes needed to transform `s1` into `s2`.
@@ -35,14 +37,18 @@ pub fn edit_distance(s1: &str, s2: &str) -> usize {
             // We subtract 1 from the character index because the grid has the empty string as a
             // possibility in the first row and column.
             let edit_distance = if s1.as_bytes().get(y - 1) != s2.as_bytes().get(x - 1) {
+                
                 min_cost + 1
             } else {
+                println!("x:{:?},y:{:?}", s2.as_bytes().get(x - 1), s1.as_bytes().get(y - 1));
                 min_cost
             };
 
             m.set(x, y, edit_distance);
         }
     }
+
+    println!("{}", m);
 
     // The answer is stored in the bottom right cell
     // We know this won't panic, because the width and height of
@@ -71,7 +77,7 @@ mod tests {
 
     #[test]
     fn test_single_character_deletion() {
-        assert_eq!(edit_distance("kitten", "kittn"), 1);
+        assert_eq!(edit_distance("kittn", "kitten"), 1);
     }
 
     #[test]
